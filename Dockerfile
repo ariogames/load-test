@@ -1,5 +1,5 @@
 #set django base image
-FROM docker.ariogames.ir/python:3.6
+FROM python:3.6
 
 RUN apt-get update
 RUN apt-get install -y python3-dev libpq-dev
