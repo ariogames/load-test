@@ -17,5 +17,7 @@ RUN pip install -r requirements.txt
 COPY . .
 
 EXPOSE 8089
+EXPOSE 5557
+EXPOSE 5558
 
 CMD locust

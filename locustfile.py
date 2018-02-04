@@ -20,10 +20,11 @@ def get_task_callable(url):
 
 
 class MyTaskSet(TaskSet):
-    tasks = [get_task_callable(API_HOST + url) for url in api_urls]
+    tasks = [get_task_callable(url) for url in api_urls]
 
 
 class WebsiteUser(HttpLocust):
     task_set = MyTaskSet
     min_wait = user_min_wait
     max_wait = user_max_wait
+    host = API_HOST
