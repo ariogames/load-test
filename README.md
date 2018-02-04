@@ -50,24 +50,22 @@ The tool can be used in distributed mode using the following commands:
 on master node:
 
 ```commandline
-docker run --name myloadtest -p "8089:8089" \
---env LOCUST_API_HOST=http://example.com \
+docker run --rm --name loadtestmaster -p "8089:8089" -p "5557:5557" -p "5558:5558" \
+--env LOCUST_API_HOST=http://api.example.com \
 --env LOCUST_API_URLS=/api1,/api2,/api3 \
---env LOCUST_API_HEADERS={"Authorization":"test"} \ 
---env LOCUST_USER_MIN_WAIT=500 \
---env LOCUST_USER_MAX_WAIT=200 \
-arioloadtest:latest locust --master
+--env LOCUST_USER_MIN_WAIT=200 \
+--env LOCUST_USER_MAX_WAIT=500 \
+ariogames/loadtest:latest locust -f locustfile.py --master
 ```
 
 on slave nodes:
 ```commandline
-docker run --name myloadtest -p "8089:8089" \
---env LOCUST_API_HOST=http://example.com \
+docker run --rm --name loadtestslave \
+--env LOCUST_API_HOST=http://api.example.com \
 --env LOCUST_API_URLS=/api1,/api2,/api3 \
---env LOCUST_API_HEADERS={"Authorization":"test"} \ 
---env LOCUST_USER_MIN_WAIT=500 \
---env LOCUST_USER_MAX_WAIT=200 \
-arioloadtest:latest locust --slave --master-host=<MASTER_IP_ADDR>
+--env LOCUST_USER_MIN_WAIT=200 \
+--env LOCUST_USER_MAX_WAIT=500 \
+ariogames/loadtest:latest locust --slave --master-host=<MASTER_IP_ADDR>
 ```
 
 ## Built With
