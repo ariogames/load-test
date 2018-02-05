@@ -13,20 +13,25 @@ MASTER_WEB_PORT_ADDR = os.environ.get('LOCUST_MASTER_WEB_PORT_ADDR', '8089')
 class Config:
     def __init__(self):
         if MASTER_IP_ADDR:
+            print('Getting configuration from master...')
             master_config_url = 'http://{host}:{port}/config'.format(host=MASTER_IP_ADDR, port=MASTER_WEB_PORT_ADDR)
-            rsp = requests.get(master_config_url).json()
-            self.json_data = rsp['message']
-            self.host = self.json_data['host']
-            self.headers = dict(self.json_data['headers'])
-            self.user_min_wait = self.json_data['min_wait']
-            self.user_max_wait = self.json_data['max_wait']
-            self.urls = self.json_data['urls']
+            try:
+                rsp = requests.get(master_config_url).json()
+                self.json_data = rsp['message']
+                self.host = self.json_data['host']
+                self.headers = dict(self.json_data['headers'])
+                self.user_min_wait = self.json_data['min_wait']
+                self.user_max_wait = self.json_data['max_wait']
+                self.urls = self.json_data['urls']
+            except KeyError:
+                print('Configuration Error! You should post configuration to master first!!')
+
         else:
-            self.host = os.environ.get('LOCUST_API_HOST')
-            self.headers = json.loads(os.environ.get('LOCUST_API_HEADERS'))
-            self.user_min_wait = int(os.environ.get('LOCUST_USER_MIN_WAIT'))
-            self.user_max_wait = int(os.environ.get('LOCUST_USER_MAX_WAIT'))
-            self.urls = os.environ.get('LOCUST_API_URLS').split(',')
+            self.host = os.environ.get('LOCUST_API_HOST', '')
+            self.headers = json.loads(os.environ.get('LOCUST_API_HEADERS', '{}'))
+            self.user_min_wait = int(os.environ.get('LOCUST_USER_MIN_WAIT', '100'))
+            self.user_max_wait = int(os.environ.get('LOCUST_USER_MAX_WAIT', '200'))
+            self.urls = os.environ.get('LOCUST_API_URLS', '').split(',')
 
 
 config = Config()
