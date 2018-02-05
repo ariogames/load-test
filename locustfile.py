@@ -13,7 +13,7 @@ MASTER_WEB_PORT_ADDR = os.environ.get('LOCUST_MASTER_WEB_PORT_ADDR', '8089')
 class Config:
     def __init__(self):
         if MASTER_IP_ADDR:
-            master_config_url = 'http://{host}:{port}'.format(host=MASTER_IP_ADDR, port=MASTER_WEB_PORT_ADDR)
+            master_config_url = 'http://{host}:{port}/config'.format(host=MASTER_IP_ADDR, port=MASTER_WEB_PORT_ADDR)
             rsp = requests.get(master_config_url).json()
             self.json_data = rsp['message']
             self.host = self.json_data['host']

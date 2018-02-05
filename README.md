@@ -47,19 +47,12 @@ The env variables should be used to configure the tool:
 
 The tool can be used in distributed mode using the following commands:
 
-on master node:
+On master node:
 
 ```commandline
 docker run --rm --name loadtestmaster -p "8089:8089" -p "5557:5557" -p "5558:5558" ariogames/loadtest:latest locust --master
 ```
-
-on slave nodes:
-```commandline
-docker run --rm --name loadtestslave --env LOCUST_MASTER_IP_ADDR=<MASTER_IP_ADDR> --env LOCUST_MASTER_WEB_PORT_ADDR=8089
-ariogames/loadtest:latest
-```
-
-then `Post` the test configuration to master node, at the `http://<MASTER_IP_ADDR>:<MASTER_WEB_PORT>/config` endpoint:
+Then `Post` the test configuration to master node, at the `http://<MASTER_IP_ADDR>:<MASTER_WEB_PORT>/config` endpoint:
 ```json
 {
 	"host": "http://api.example.com",
@@ -70,7 +63,13 @@ then `Post` the test configuration to master node, at the `http://<MASTER_IP_ADD
 }
 ```
 
-now browse to `http://<MASTER_IP_ADDR>:<MASTER_WEB_PORT>` and start your tests, 
+Now run slave nodes:
+```commandline
+docker run --rm --name loadtestslave --env LOCUST_MASTER_IP_ADDR=<MASTER_IP_ADDR> --env LOCUST_MASTER_WEB_PORT_ADDR=8089
+ariogames/loadtest:latest
+```
+
+Finally browse to `http://<MASTER_IP_ADDR>:<MASTER_WEB_PORT>` and start your tests, 
 you can change the test configurations any time you want and restart your tests using the web panel.
 
 ## Built With
