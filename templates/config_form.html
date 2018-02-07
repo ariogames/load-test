@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Locust</title>
+    <link rel="stylesheet" type="text/css" href="/static/style.css?v=0.8.1" media="screen">
+    <link rel="shortcut icon" href="/static/img/favicon.ico" type="image/x-icon"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/5.13.2/jsoneditor.min.css" rel="stylesheet"
+          type="text/css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/5.13.2/jsoneditor.min.js"></script>
+</head>
+<body class="{{ state }}">
+<div class="top">
+    <div class="top-content container">
+        <a href="/"><img src="/static/img/logo.png?v=0.8.1" class="logo"/></a>
+        <div style="clear:both;"></div>
+    </div>
+</div>
+<div class="main">
+    <div class="edit">
+        <h2>Edit Config</h2>
+        <div id="jsoneditor" style="width: 400px; height: 400px;"></div>
+        <button id="submit" type="submit">Submit Config</button>
+        <p id="status"></p>
+    </div>
+    <script>
+        // create the editor
+        var container = document.getElementById("jsoneditor");
+        var options = {modes: ['code']};
+        var editor = new JSONEditor(container, options);
+
+        // set json
+        var json = {{ data|safe }};
+        editor.set(json);
+
+        $("#submit").click(function () {
+            $.ajax({
+                type: "POST",
+                contentType: 'application/json;charset=UTF-8',
+                url: "/config",
+                data: JSON.stringify(editor.get(), null, '\t'),
+                success: function (result) {
+                    if (result["message"] === "ok") {
+                        $("#status").text("Success!")
+                    } else {
+                        $("#status").text("Failed!")
+                        console.log(result)
+                    }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    $("#status").text("Failed! :(")
+                }
+            });
+        });
+
+    </script>
+    <div style="clear:right;"></div>
+</div>
+</body>
+</html>

@@ -2,8 +2,16 @@ import os
 import json
 import dotenv
 import requests
-from flask import request, jsonify
+import jinja2
+from flask import request, jsonify, render_template
 from locust import TaskSet, HttpLocust, events, web
+
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+my_loader = jinja2.ChoiceLoader([
+    jinja2.FileSystemLoader(os.path.join(PROJECT_ROOT, 'templates')),
+    web.app.jinja_loader,
+])
+web.app.jinja_loader = my_loader
 
 dotenv.read_dotenv()
 MASTER_IP_ADDR = os.environ.get('LOCUST_MASTER_IP_ADDR', None)
@@ -68,6 +76,7 @@ def get_tasks():
     if request.method == 'POST':
         import pickle
         data = request.get_json()
+        print(data)
         output = open('task_set.pkl', 'wb')
         pickle.dump(data, output)
         output.close()
@@ -81,3 +90,15 @@ def get_tasks():
             return jsonify({'message': data})
         except FileNotFoundError:
             return jsonify({'message': {}})
+
+
+@web.app.route("/config/edit", methods=['GET'])
+def edit_config():
+    import pickle
+    try:
+        pkl_file = open('task_set.pkl', 'rb')
+        data = pickle.load(pkl_file)
+        pkl_file.close()
+        return render_template('config_form.html', data=json.dumps(data))
+    except FileNotFoundError:
+        return render_template('config_form.html', data=json.dumps({}))

@@ -52,14 +52,16 @@ On master node:
 ```commandline
 docker run --rm --name loadtestmaster -p "8089:8089" -p "5557:5557" -p "5558:5558" ariogames/loadtest:latest locust --master
 ```
-Then `Post` the test configuration to master node, at the `http://<MASTER_IP_ADDR>:<MASTER_WEB_PORT>/config` endpoint:
+
+Then go tho the `http://<MASTER_IP_ADDR>:<MASTER_WEB_PORT>/config/edit` and submit your test configuration json.
+you can `POST` the test configuration to master node, at the `http://<MASTER_IP_ADDR>:<MASTER_WEB_PORT>/config` endpoint, either:
 ```json
 {
-	"host": "http://api.example.com",
-	"urls": ["/api1", "/api2"],
-	"headers": {"Authorization": "test-token"},
-	"min_wait": 100,
-	"max_wait": 200
+  "host": "http://api.example.com",
+  "urls": ["/api1", "/api2"],
+  "headers": {"Authorization": "test-token"},
+  "min_wait": 100,
+  "max_wait": 200
 }
 ```
 
