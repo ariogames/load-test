@@ -48,6 +48,9 @@ config = Config()
 def my_start_hatching_handler(*args, **kw):
     c = Config()
     MyTaskSet.tasks = [get_task_callable(url) for url in c.urls]
+    WebsiteUser.min_wait = c.user_min_wait
+    WebsiteUser.max_wait = c.user_max_wait
+    WebsiteUser.host = c.host
 
 
 events.locust_start_hatching += my_start_hatching_handler
